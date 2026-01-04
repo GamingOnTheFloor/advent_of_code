@@ -19,3 +19,16 @@ ranges
 
 (def part1-answer (apply + (map sum-invalids-in-range ranges)))
 part1-answer
+
+
+(defn get-divisors [num] (->> (range 1 (/ (+ num 1) 2)) (filter (fn [x] (= 0 (rem num x))))))
+
+(defn part2-invalid? [num] (let [len (count (str num))
+                                 divisors (get-divisors len)
+                                 splits (map (fn [divisor] (partition divisor (str num))) divisors)]
+                             (some false? (map (fn [split] (not= 1 (count (set split)))) splits))))
+
+(defn sum-part2-invalids-in-range [[start end]] (->> (range start (+ 1 end)) (reduce (fn [sum range] (if (part2-invalid? range) (+ sum range) sum)) 0)))
+
+(def part2-answer (apply + (map sum-part2-invalids-in-range ranges)))
+part2-answer
